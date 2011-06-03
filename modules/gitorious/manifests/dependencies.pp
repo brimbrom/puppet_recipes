@@ -97,8 +97,8 @@ class gitorious::depends {
         require => [Exec["ldconfig"], Package[$package_list]],
     }
 
-    install_from_remote_tarball {"ImageMagick-6.5.8-4":
-        url => "ftp://ftp.imagemagick.net/pub/ImageMagick/ImageMagick-6.5.8-4.tar.gz",
+    install_from_remote_tarball {"ImageMagick-6.7.0-3":
+        url => "ftp://ftp.imagemagick.org/pub/ImageMagick/ImageMagick-6.7.0-3.tar.gz",
         cwd => "/root/",
         unless => "which imagemagick",
         timeout => "-1",
@@ -115,7 +115,7 @@ class gitorious::depends {
   package {$gems:
     ensure => installed,
     provider => gem,
-    require => [Package[$package_list], Install_from_remote_tarball["onig-5.9.1"], Install_from_remote_tarball["sphinx-0.9.8"], Install_from_remote_tarball["ImageMagick-6.5.8-4"], Exec["gem_update"]]
+    require => [Package[$package_list], Install_from_remote_tarball["onig-5.9.1"], Install_from_remote_tarball["sphinx-0.9.8"], Install_from_remote_tarball["ImageMagick-6.7.0-3"], Exec["gem_update"]]
   } 
 
   package {"echoe":

@@ -13,7 +13,7 @@ class gitorious {
 
   package {$rpm_packages:
     ensure => installed,
-    require =>Yumrepo["DAG"]
+    require =>Yumrepo["DAG", "EPEL"]
   }
 
 }
@@ -24,10 +24,33 @@ class gitorious::base {
 
     file {"/etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag":
         ensure => present,
-        source => "puppet:///gitorious/keys/RPM-GPG-KEY-rpmforge-dag",
+        source => "puppet:///modules/gitorious/keys/RPM-GPG-KEY-rpmforge-dag",
         owner => "root",
         group => "root",
     }
+
+
+    file { "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL":
+        owner => root,
+        group => root,
+        mode => 0444,
+	ensure => present,
+        source => "puppet:///modules/gitorious/keys/RPM-GPG-KEY-EPEL"
+    }
+
+    yumrepo { "EPEL":
+        baseurl => 'http://download.fedoraproject.org/pub/epel/5/$basearch',
+        mirrorlist => 'http://mirrors.fedoraproject.org/mirrorlist?repo=epel-5&arch=$basearch',
+        enabled => 1,
+        gpgcheck => 1,
+        gpgkey => "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL",
+        require => File["/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL"],
+        descr => "Extra Packages for Enterprise Linux 5 - $basearch",
+
+        # git is found in the EPEL repository
+#        before => Package["git"]
+    }
+
 
     yumrepo { "DAG":
         descr => "RPMforge.net - dag",
